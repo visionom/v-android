@@ -1,0 +1,8 @@
+!gradle-wrapper.jar
+*.iml
+*.jar
+.externalNativeBuild
+.gradle
+.idea/
+build/
+local.properties
