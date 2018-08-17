@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vision</string>
+    <string name="recorder_start">开始录音</string>
+    <string name="recorder_stop">停止录音</string>
+</resources>

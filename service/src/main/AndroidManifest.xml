@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.machinly.vision.service">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="false"
@@ -17,9 +20,18 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.machinly.vision.WAKEUP_VISION" />
+                <action android:name="com.machinly.vision.service.WAKEUP_VISION" />
             </intent-filter>
         </receiver>
-        <service android:name=".VisionService" />
+        <service
+            android:name=".VisionService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.machinly.vision.service.VisionService" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>
