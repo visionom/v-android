@@ -13,7 +13,6 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
     private var config = VisionBuilder.GetDefaultConfig()
     private var voiceSQ = SynchronousQueue<ByteArray>()
     private var recorder = Recorder(voiceSQ)
-    private var statusMap: Map<VisionOption, VisionStatus> = HashMap()
     private val vmgr = VisionStatusMgr()
 
     companion object {
@@ -27,13 +26,12 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
     fun initPipeline() {
         Thread {
             while (true) {
-                Log.d("test", Arrays.toString(voiceSQ.take()))
+                Log.v(TAG, Arrays.toString(voiceSQ.take()))
             }
-        }
+        }.start()
     }
 
-    fun GetStatus(optionOrder: Int): VisionStatus {
-        vmgr.PrintStatusMap()
+    fun getStatus(optionOrder: Int): VisionStatus {
         return vmgr.GetStatus(optionOrder)
     }
 
@@ -49,6 +47,7 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
                     recorder.stopRecording()
                     vmgr.SetStatus(VisionStatus.REC_OFF)
                 }
+                vmgr.PrintStatusMap()
             }
             else -> {
                 Log.e(TAG, "option ${VisionOption.valueOf(msg.what.toString())} not define")

@@ -36,6 +36,7 @@ class VisionMainActivity : AppCompatActivity() {
     private fun wakeup() {
         intent = Intent("com.machinly.vision.service.WAKEUP_VISION")
         sendBroadcast(intent)
+
         intent = Intent("com.machinly.vision.service.VisionService")
         intent.setClassName("com.machinly.vision.service", "com.machinly.vision.service.VisionService")
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE)
@@ -48,16 +49,17 @@ class VisionMainActivity : AppCompatActivity() {
 
     private fun checkStatus() {
         Log.d(TAG, "check status")
-        recorderCtlBtn.post {
+        recorderCtlBtn.postDelayed({
             if (mService != null) {
-                Log.d(TAG, mService?.getStatus(VisionOption.REC.ordinal).toString())
                 when (mService?.getStatus(VisionOption.REC.ordinal)) {
                     VisionStatus.REC_ON.ordinal -> recorderCtlBtn.setText(R.string.recorder_stop)
                     VisionStatus.REC_OFF.ordinal -> recorderCtlBtn.setText(R.string.recorder_start)
                     else -> recorderCtlBtn.setText(R.string.recorder_start)
                 }
+            } else {
+                recorderCtlBtn.setText(R.string.recorder_start)
             }
-        }
+        }, 100)
     }
 
     private fun recorderTrigger() {

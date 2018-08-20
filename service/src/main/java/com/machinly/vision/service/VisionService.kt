@@ -50,7 +50,7 @@ class VisionService : Service() {
         }
 
         override fun getStatus(option: Int): Int {
-            return mHandler?.GetStatus(option)!!.ordinal
+            return mHandler?.getStatus(option)!!.ordinal
         }
 
         override fun getVoiceBytesByTime(duration: Int): ByteArray {

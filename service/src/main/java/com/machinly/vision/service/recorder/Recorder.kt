@@ -4,6 +4,7 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.util.Log
+import java.util.*
 import java.util.concurrent.SynchronousQueue
 import kotlin.experimental.and
 import kotlin.experimental.xor
@@ -17,7 +18,7 @@ class Recorder(private val voiceSQ: SynchronousQueue<ByteArray>) {
     private var isRecording = false
 
     companion object {
-        private const val TAG = "recorder_handler"
+        private const val TAG = "recorder"
         private const val RECORDER_SAMPLE_RATE = 8000
         private const val RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO
         private const val RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT
@@ -37,6 +38,7 @@ class Recorder(private val voiceSQ: SynchronousQueue<ByteArray>) {
                 val sData = ShortArray(bufferElements2Rec)
                 recorder?.read(sData, 0, bufferElements2Rec)
                 val bData = short2byte(sData)
+                Log.v(TAG, Arrays.toString(bData))
                 voiceSQ.put(bData)
             }
         }, "AudioRecorder Thread")

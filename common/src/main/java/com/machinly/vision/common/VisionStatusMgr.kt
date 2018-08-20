@@ -38,11 +38,7 @@ class VisionStatusMgr {
     fun GetStatus(opOrder: Int): VisionStatus {
         val op = GetOptionByOrder(opOrder)
         Log.d(TAG, op.name)
-        if (statusMap.containsKey(op))
-            return statusMap[op]!!
-        val status = defaultStatusMap[op]!!
-        statusMap[op] = status
-        return status
+        return GetStatus(op)
     }
 
     fun GetStatusByOrder(order: Int): VisionStatus {
@@ -58,8 +54,9 @@ class VisionStatusMgr {
     }
 
     fun PrintStatusMap() {
+        Log.d(TAG, "Status Map")
         statusMap.forEach {
-            Log.d(TAG, "${it.key}: ${it.value}")
+            Log.d(TAG, "${it.key}: ${it.value} ${it.value.ordinal}")
         }
     }
 }
