@@ -7,6 +7,6 @@ import java.lang.String;
 interface IVisionAidlInterface {
     void trigger(int option);
     int getStatus(int option);
-    byte[] getVoiceBytesByTime(int duration);
+    byte[] getVoiceBytes();
     String[] getStringAfterID(int id);
 }

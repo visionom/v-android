@@ -53,8 +53,8 @@ class VisionService : Service() {
             return mHandler?.getStatus(option)!!.ordinal
         }
 
-        override fun getVoiceBytesByTime(duration: Int): ByteArray {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        override fun getVoiceBytes(): ByteArray {
+            return mHandler?.getAllAudioCache()!!
         }
 
         override fun getStringAfterID(id: Int): Array<String> {
