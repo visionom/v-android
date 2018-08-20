@@ -35,10 +35,11 @@ class VisionService : Service() {
         val mServiceLooper = thread.looper
         mHandler = VisionHandler(mServiceLooper)
         mHandler?.init()
-        visionTrigger(VisionAction.REC_START.ordinal)
+        visionTrigger(VisionOption.REC.ordinal)
     }
 
     private fun visionTrigger(option: Int) {
+        Log.d(TAG, "visionTrigger executed")
         mHandler?.sendEmptyMessage(option)
     }
 
@@ -49,10 +50,7 @@ class VisionService : Service() {
         }
 
         override fun getStatus(option: Int): Int {
-            val status = mHandler?.getStatus(option)?.ordinal
-            if (status != null)
-                return status
-            return 0
+            return mHandler?.GetStatus(option)!!.ordinal
         }
 
         override fun getVoiceBytesByTime(duration: Int): ByteArray {

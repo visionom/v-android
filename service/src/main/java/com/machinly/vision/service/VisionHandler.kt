@@ -14,19 +14,14 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
     private var voiceSQ = SynchronousQueue<ByteArray>()
     private var recorder = Recorder(voiceSQ)
     private var statusMap: Map<VisionOption, VisionStatus> = HashMap()
+    private val vmgr = VisionStatusMgr()
 
     companion object {
         const val TAG = "vision_handler"
     }
 
     fun init() {
-        initStatus()
         initPipeline()
-    }
-
-    fun initStatus() {
-        setStatus(VisionStatus.REC_OFF)
-        setStatus(VisionStatus.RECOG_OFF)
     }
 
     fun initPipeline() {
@@ -37,37 +32,22 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
         }
     }
 
-    private fun checkStatus(status: VisionStatus): Boolean {
-        if (statusMap.containsKey(status.option))
-            return statusMap[status.option]!! == status
-        return false
+    fun GetStatus(optionOrder: Int): VisionStatus {
+        vmgr.PrintStatusMap()
+        return vmgr.GetStatus(optionOrder)
     }
-
-    private fun setStatus(status: VisionStatus) {
-        Log.i(TAG, statusMap.keys.toString())
-        statusMap.plus(Pair(status.option, status))
-    }
-
-    fun getStatus(op: Int): VisionStatus {
-//        if (VisionOption.values().size > op) {
-//            val key = VisionOption.values()[op]
-//            if (statusMap.containsKey(key))
-//                return statusMap[key]!!
-//        }
-        return statusMap[VisionOption.REC]!!
-    }
-
 
     override fun handleMessage(msg: Message) {
         super.handleMessage(msg)
+        Log.d(TAG, msg.what.toString())
         when (msg.what) {
             VisionOption.REC.ordinal -> {
-                if (checkStatus(VisionStatus.REC_OFF)) {
+                if (vmgr.CheckStatus(VisionStatus.REC_OFF)) {
                     recorder.startRecording()
-                    setStatus(VisionStatus.RECOG_ON)
+                    vmgr.SetStatus(VisionStatus.REC_ON)
                 } else {
                     recorder.stopRecording()
-                    setStatus(VisionStatus.RECOG_OFF)
+                    vmgr.SetStatus(VisionStatus.REC_OFF)
                 }
             }
             else -> {

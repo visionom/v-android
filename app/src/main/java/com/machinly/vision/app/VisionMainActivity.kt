@@ -47,9 +47,10 @@ class VisionMainActivity : AppCompatActivity() {
     }
 
     private fun checkStatus() {
+        Log.d(TAG, "check status")
         recorderCtlBtn.post {
             if (mService != null) {
-                Log.d(TAG, mService.toString())
+                Log.d(TAG, mService?.getStatus(VisionOption.REC.ordinal).toString())
                 when (mService?.getStatus(VisionOption.REC.ordinal)) {
                     VisionStatus.REC_ON.ordinal -> recorderCtlBtn.setText(R.string.recorder_stop)
                     VisionStatus.REC_OFF.ordinal -> recorderCtlBtn.setText(R.string.recorder_start)
