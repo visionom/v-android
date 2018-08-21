@@ -62,8 +62,8 @@ class Recorder(private val voiceSQ: SynchronousQueue<ByteArray>) {
         val shortArrSize = sData.size
         val bytes = ByteArray(shortArrSize * 2)
         for (i in 0 until shortArrSize) {
-            bytes[i * 2] = (sData[i] and 0x00FF).toByte()
-            bytes[i * 2 + 1] = (sData[i] xor 8).toByte()
+            bytes[i * 2] = (sData[i] and 0xff).toByte()
+            bytes[i * 2 + 1] = (sData[i].toInt() shr (8) and 0xff).toByte()
             sData[i] = 0
         }
         return bytes

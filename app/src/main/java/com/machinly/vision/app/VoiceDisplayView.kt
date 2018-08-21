@@ -21,6 +21,7 @@ class VoiceDisplayView : View {
 
     private var mService: IVisionAidlInterface? = null
     private var bs: ByteArray? = null
+    private var volumeMax = 10F
 
     companion object {
         const val TAG = "vision_voice_view"
@@ -80,29 +81,84 @@ class VoiceDisplayView : View {
 
         val contentWidth = width - paddingLeft - paddingRight
         val contentHeight = height - paddingTop - paddingBottom
-        val middleWidth = contentWidth / 2 + paddingLeft
 
-        // Draw the text.
-        val paint = Paint()
+        drawCurVoice(
+                canvas,
+                contentWidth.toFloat(),
+                contentHeight.toFloat(),
+                paddingLeft.toFloat(),
+                paddingTop.toFloat(),
+                paddingRight.toFloat(),
+                paddingBottom.toFloat()
+        )
 
-        paint.color = Color.RED
-        canvas.drawLine((middleWidth).toFloat(), 0F, (middleWidth).toFloat(), contentHeight.toFloat(), paint)
-        paint.color = Color.GREEN
-        if (bs != null) {
-            // TODO: Audio processing is more complicated than I thought, I will do some research
-//            var i = 0
-//            while (i < bs!!.size) {
-//                val l = ((bs!![i] + 128) * 256 + bs!![i + 1] + 128) / 100F
-//                canvas.drawLine(i / 2F, 0F, i / 2F, l + 0F, paint)
-//                i += 2
-//            }
-        }
 
-        // Draw the example drawable on top of the text.
         exampleDrawable?.let {
             it.setBounds(paddingLeft, paddingTop,
                     paddingLeft + contentWidth, paddingTop + contentHeight)
             it.draw(canvas)
         }
+    }
+
+    private fun drawLine(canvas: Canvas, cw: Float, ch: Float, pl: Float, pt: Float, pr: Float, pb: Float) {
+
+        val l = pl
+        val t = pt
+        val r = cw + pl
+        val b = ch + pt
+
+        val mw = cw / 2 + pl
+        val mh = ch / 2 + pt
+
+        val paint = Paint()
+
+        paint.color = Color.RED
+        paint.alpha = 200
+        canvas.drawLine(mw, b, mw, t, paint)
+
+        paint.color = Color.BLACK
+        canvas.drawLine(l, mh, r, mh, paint)
+
+    }
+
+    private fun drawCurVoice(canvas: Canvas, cw: Float, ch: Float, pl: Float, pt: Float, pr: Float, pb: Float) {
+        val l = pl
+        val t = pt
+        val r = cw + pl
+        val b = ch + pt
+
+        val mw = cw / 2 + pl
+        val mh = ch / 2 + pt
+
+        // Draw the text.
+        val paint = Paint()
+
+        paint.color = Color.GREEN
+        paint.strokeWidth = 2F
+        if (bs != null) {
+            var i = 0
+            val stepW = cw / bs!!.size.toFloat()
+            while (i < bs!!.size - 2) {
+                val av = (bs!![i]) + ((bs!![i + 1] + 0) shl 8)
+                val bv = (bs!![i + 2]) + ((bs!![i + 3] + 0) shl 8)
+
+                if (Math.abs(av) > volumeMax) {
+                    volumeMax = Math.abs(av).toFloat()
+                }
+
+                if (Math.abs(bv) > volumeMax) {
+                    volumeMax = Math.abs(bv).toFloat()
+                }
+
+                val ay = (av / volumeMax) * ch + mh
+                val by = (bv / volumeMax) * ch + mh
+                val ax = i * stepW + pl
+                val bx = (i + 1) * stepW + pl
+
+                canvas.drawLine(ax, ay, bx, by, paint)
+                i += 2
+            }
+        }
+
     }
 }
