@@ -19,7 +19,7 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
 
     companion object {
         const val TAG = "vision_handler"
-        const val CacheSize = 100
+        const val CacheSize = 1000
     }
 
     fun init() {
@@ -47,11 +47,17 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
 
     fun getAllAudioCache(): ByteArray {
         val os = ByteArrayOutputStream()
-        audioCache.iterator().let {
-            while (it.hasNext()) {
-                os.write(it.next())
+        while (audioCache.isNotEmpty()) {
+            val bs = audioCache.remove()
+            if (bs != null) {
+                os.write(bs)
             }
         }
+//        audioCache.iterator().let {
+//            while (it.hasNext()) {
+//                os.write(it.next())
+//            }
+//        }
         return os.toByteArray()
 //        if (audioCache.size > 0)
 //            return audioCache.element()

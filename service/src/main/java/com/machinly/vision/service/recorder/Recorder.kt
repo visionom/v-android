@@ -11,7 +11,7 @@ import kotlin.experimental.xor
 
 class Recorder(private val voiceSQ: SynchronousQueue<ByteArray>) {
 
-    private val bufferElements2Rec = 1024 // want to play 2048 (2K) since 2 bytes we use only 1024
+    private val bufferElements2Rec = 64 // want to play 2048 (2K) since 2 bytes we use only 1024
     private val bytesPerElement = 2 // 2 bytes in 16bit format
     private var recorder: AudioRecord? = null
     private var recordingThread: Thread? = null
