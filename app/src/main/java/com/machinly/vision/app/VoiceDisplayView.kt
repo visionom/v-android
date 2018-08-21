@@ -54,7 +54,7 @@ class VoiceDisplayView : View {
                     }
                 }
                 postInvalidate()
-                Thread.sleep(40)
+                Thread.sleep(10)
             }
         }.start()
     }
@@ -137,7 +137,7 @@ class VoiceDisplayView : View {
         paint.strokeWidth = 2F
         if (bs != null) {
             var i = 0
-            val stepW = cw / bs!!.size.toFloat()
+            val stepW = cw / bs!!.size.toFloat() * 2
             while (i < bs!!.size - 2) {
                 val av = (bs!![i]) + ((bs!![i + 1] + 0) shl 8)
                 val bv = (bs!![i + 2]) + ((bs!![i + 3] + 0) shl 8)
@@ -152,13 +152,12 @@ class VoiceDisplayView : View {
 
                 val ay = (av / volumeMax) * ch + mh
                 val by = (bv / volumeMax) * ch + mh
-                val ax = i * stepW + pl
-                val bx = (i + 1) * stepW + pl
+                val ax = i / 2 * stepW + pl
+                val bx = (i / 2 + 1) * stepW + pl
 
                 canvas.drawLine(ax, ay, bx, by, paint)
                 i += 2
             }
         }
-
     }
 }
