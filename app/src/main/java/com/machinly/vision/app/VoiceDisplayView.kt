@@ -21,10 +21,10 @@ class VoiceDisplayView : View {
 
     private var mService: IVisionAidlInterface? = null
     private var bs: ByteArray? = null
-    private var volumeMax = 10F
 
     companion object {
-        const val TAG = "vision_voice_view"
+        private const val TAG = "vision_voice_view"
+        private const val volumeMax = 65535F
     }
 
     var exampleDrawable: Drawable? = null
@@ -141,15 +141,6 @@ class VoiceDisplayView : View {
             while (i < bs!!.size - 2) {
                 val av = (bs!![i]) + ((bs!![i + 1] + 0) shl 8)
                 val bv = (bs!![i + 2]) + ((bs!![i + 3] + 0) shl 8)
-
-                if (Math.abs(av) > volumeMax) {
-                    volumeMax = Math.abs(av).toFloat()
-                }
-
-                if (Math.abs(bv) > volumeMax) {
-                    volumeMax = Math.abs(bv).toFloat()
-                }
-
                 val ay = (av / volumeMax) * ch + mh
                 val by = (bv / volumeMax) * ch + mh
                 val ax = i / 2 * stepW + pl

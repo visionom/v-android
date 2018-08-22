@@ -9,13 +9,17 @@ import kotlin.collections.HashMap
 import com.machinly.vision.service.recorder.Recorder
 import com.machinly.vision.common.*
 import java.io.ByteArrayOutputStream
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 class VisionHandler internal constructor(looper: Looper) : android.os.Handler(looper) {
     private var config = VisionBuilder.GetDefaultConfig()
     private var voiceSQ = SynchronousQueue<ByteArray>()
     private var recorder = Recorder(voiceSQ)
     private val vmgr = VisionStatusMgr()
-    private var audioCache: Queue<ByteArray> = LinkedList<ByteArray>()
+    private var audioCache: Queue<ByteArray> = ConcurrentLinkedQueue<ByteArray>()
 
     companion object {
         const val TAG = "vision_handler"
@@ -47,21 +51,12 @@ class VisionHandler internal constructor(looper: Looper) : android.os.Handler(lo
 
     fun getAllAudioCache(): ByteArray {
         val os = ByteArrayOutputStream()
-//        while (audioCache.isNotEmpty()) {
-//            val bs = audioCache.remove()
-//            if (bs != null) {
-//                os.write(bs)
-//            }
-//        }
         audioCache.iterator().let {
             while (it.hasNext()) {
                 os.write(it.next())
             }
         }
         return os.toByteArray()
-//        if (audioCache.size > 0)
-//            return audioCache.element()
-//        return ByteArray(0)
     }
 
     override fun handleMessage(msg: Message) {
